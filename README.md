@@ -1,7 +1,7 @@
 # Scrap some food data for SteW
 ## Basics
-This code uses the package Colly to scrap food names, serving size and calories from https://www.calories.info/food/,
-put them into a FoodItem struct outlined below.
+This code uses the package Colly to scrap food (names, serving size and calories) from https://www.calories.info/ and
+create a FoodItem struct as shown below:
 ```
 type FoodItem struct{
 	fid int
