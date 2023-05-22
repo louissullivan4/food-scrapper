@@ -27,9 +27,9 @@ This food is intended for personal use in a home assistant called steW. Tracking
 is needed for daily insertion of food eaten.
 
 ## Future Work
--> Scrap foods from more sources but ensure not to make duplicates
--> Add marcos for all foods in database (protein, carbs, fats and possibly mineral, sodium, etc)
--> Add functionality to update database with personal food items (may not be done in this repo)
+- Scrap foods from more sources but ensure not to make duplicates
+- Add marcos for all foods in database (protein, carbs, fats and possibly mineral, sodium, etc)
+- Add functionality to update database with personal food items (may not be done in this repo)
 
 ## Important
 db.json excluded from this repo due to sensitive nature of passwords (etc) to connect to database.
