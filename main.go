@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"database/sql"
 
 	"github.com/gocolly/colly"
+	_ "github.com/lib/pq"
 )
 
 type FoodItem struct{
@@ -23,19 +25,17 @@ type Config struct {
 }
 
 func main() {
-	// set config values from db.json 
 	config, _ := setupConfig()
-
 	foodArray := scrapeFood()
 	if len(foodArray) < 1 {
 		fmt.Println("Error scraping food items")
 	} else {
 		// fmt.Println(foodArray)
-		dbDone := insertDb(foodArray, config)
-		if (dbDone) {
+		err := insertDb(foodArray, config)
+		if (err == nil) {
 			fmt.Println("Database updated")
 		} else {
-			fmt.Println("Error updating database")
+			fmt.Println("Error updating database: ", err)
 		}
 	}
 }
@@ -75,12 +75,21 @@ func scrapeFood() []FoodItem {
 	return foodArray
 }
 
-func insertDb(foodArray []FoodItem, config Config) bool {
+func insertDb(foodArray []FoodItem, config Config) (err error){
 	// Table created: CREATE table StewFood ( Fid INT PRIMARY KEY, Name TEXT, Serving TEXT, Calories TEXT,);
-	// read in const from db.txt
 	psqlconn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", config.Host, config.Port, config.User, config.Password, config.Dbname)
-	fmt.Println(psqlconn)
-	return true
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	for i := 0; i < len(foodArray); i++ {
+		_, err = db.Exec("INSERT INTO StewFood (Fid, Name, Serving, Calories) VALUES ($1, $2, $3, $4)", foodArray[i].fid, foodArray[i].name, foodArray[i].serving, foodArray[i].calories)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func setupConfig() (Config, error) {
