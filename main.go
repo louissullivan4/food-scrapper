@@ -12,16 +12,6 @@ type FoodItem struct{
 }
 
 func main() {
-	//100ml8 fl. oz. (240 ml)1 fl. oz (30 ml)
-	// from the above extract the (240ml)
-	// string1 := "100ml8 fl. oz. (240 ml)1 fl. oz (30 ml)"
-	// re := regexp.MustCompile(`\((\d+ ml)\)`)
-	// match := re.FindStringSubmatch(string1)
-	// val, _ := strconv.Atoi(match[1][:len(match[1])-3])
-	// fmt.Println(val)
-
-
-
 	foodArray := scrapeFood()
 	fmt.Println(foodArray)	
 }
@@ -40,17 +30,13 @@ func scrapeFood() []FoodItem {
 
 	var foodArray []FoodItem
 
-	for i := 0; i < 1; i++ {
+	for i := 0; i < len(categoriesArray); i++ {
 		var foodItem FoodItem
 		c.OnHTML("tr", func(e *colly.HTMLElement){
 			// skip the title values
 			if ((e.ChildText("td.serving")) != "ServingServingServing") {
 				foodItem.name = e.ChildText("a")
-				// extract the ml from the string
-				re := regexp.MustCompile(`\((\d+ ml)\)`)
-				match := re.FindStringSubmatch(e.ChildText("td.serving"))
-				strippedServing, _ := strconv.Atoi(match[1][:len(match[1])-3])
-				foodItem.serving = strconv.Itoa(strippedServing)
+				foodItem.serving = "100"
 				foodItem.calories = e.ChildText("td.kcal")
 				foodArray = append(foodArray, foodItem)
 			}
